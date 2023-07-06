@@ -1,8 +1,11 @@
 {
-  "name": "@agelesscoding/cli",
+  "name": "agelesscoding-cli",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "core/*",
+    "commands/*",
+    "models/*",
+    "utils/*"
   ],
   "dependencies": {},
   "devDependencies": {
