@@ -1,14 +1,11 @@
 {
-  "name": "@agelesscoding/cli",
+  "name": "@agelesscoding/log",
   "version": "0.1.0",
-  "description": "Ageless Coding - Core",
+  "description": "Ageless Coding Utils - log",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "",
   "license": "ISC",
   "main": "lib/index.js",
-  "bin": {
-    "agelesscoding": "bin/index.js"
-  },
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -16,12 +13,13 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "test": "node ./__tests__/core.test.js"
+    "test": "node ./__tests__/@agelesscoding/log.test.js"
   },
   "dependencies": {
-    "@agelesscoding/log": "file:../../utils/log",
-    "import-local": "^3.1.0",
     "npmlog": "^7.0.1"
   }
 }
