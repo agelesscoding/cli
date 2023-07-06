@@ -1,12 +1,13 @@
-'use strict';
+"use strict";
 
-const utils = require('@agelesscoding/utils');
-const { log } = require('npmlog');
-
-function core() {
-  utils();
-  log('info', 'Hello world, again and again!');
-  return 'Hello from core';
-}
+const pkg = require("../package.json");
 
 module.exports = core;
+
+function core() {
+  checkPkgVersion();
+}
+
+function checkPkgVersion() {
+  console.log(pkg.version);
+}
