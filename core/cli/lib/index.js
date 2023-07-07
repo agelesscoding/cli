@@ -13,9 +13,20 @@ function core() {
   try {
     checkPkgVersion();
     checkNodeVersion();
+    checkRoot();
   } catch (error) {
     log.error(error.message);
   }
+}
+
+// 检查 root 账户启动
+async function checkRoot() {
+  // process.getuid() 方法返回 Node.js 进程的数字标识符
+  // - 如果当前进程以 root 用户身份运行，则返回 0；
+  // - 如果当前进程以其他用户身份运行，则返回该用户的数字 ID；
+  // - 如果当前操作系统不支持，则返回 undefined。
+  const rootCheck = await import("root-check");
+  rootCheck.default();
 }
 
 // 检查 Node 版本
