@@ -1,5 +1,6 @@
 {
   "name": "@agelesscoding/cli",
+  "private": false,
   "version": "0.1.4",
   "description": "Ageless Coding - Core",
   "author": "smpower <rf.wangchn@foxmail.com>",
@@ -31,5 +32,5 @@
     "semver": "^7.5.3",
     "user-home": "^3.0.0"
   },
-  "gitHead": "c8bdc708e684e2c43b895205ea249e40765d977b"
+  "gitHead": "5ec9722b752442c31a7f813ea485719812119dfe"
 }
