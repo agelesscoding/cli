@@ -4,18 +4,28 @@ module.exports = core;
 
 const semver = require("semver");
 const colors = require("colors");
+const userHome = require("user-home");
 const log = require("@agelesscoding/log");
 
-const pkg = require("../package.json");
 const constant = require("./const");
+const pkg = require("../package.json");
 
-function core() {
+async function core() {
   try {
     checkPkgVersion();
     checkNodeVersion();
-    checkRoot();
+    await checkRoot();
+    await checkUserHome();
   } catch (error) {
     log.error(error.message);
+  }
+}
+
+// 检查用户主目录
+async function checkUserHome() {
+  const pathExists = await import("path-exists");
+  if (!userHome || !pathExists.pathExistsSync(userHome)) {
+    throw new Error(colors.red("当前登录用户主目录不存在！"));
   }
 }
 
@@ -45,5 +55,5 @@ function checkNodeVersion() {
 
 // 检查版本号
 function checkPkgVersion() {
-  log.notice("cli", pkg.version);
+  log.info("cli", pkg.version);
 }
