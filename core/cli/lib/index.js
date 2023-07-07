@@ -2,6 +2,7 @@
 
 module.exports = core;
 
+const path = require("path");
 const semver = require("semver");
 const colors = require("colors");
 const userHome = require("user-home");
@@ -20,9 +21,35 @@ async function core() {
     await checkUserHome();
     checkInputArgs();
     log.verbose("debug", "test debug log");
+    await checkEnv();
   } catch (error) {
     log.error(error.message);
   }
+}
+
+// 检查环境变量
+async function checkEnv() {
+  const dotenv = require("dotenv");
+  const dotenvPath = path.resolve(userHome, ".agelesscoding");
+  const pathExists = await import("path-exists");
+  if (pathExists.pathExistsSync(dotenvPath)) {
+    dotenv.config({ path: dotenvPath });
+  }
+  createDefaultConfig();
+  log.verbose("环境变量", process.env.CLI_HOME_PATH);
+}
+
+// 创建默认的配置文件
+function createDefaultConfig() {
+  const cliConfig = {
+    home: userHome, // 用户主目录，如：/Users/agelesscoding（暂时用不到）
+  };
+  if (process.env.CLI_HOME) {
+    cliConfig["cliHome"] = path.join(userHome, process.env.CLI_HOME);
+  } else {
+    cliConfig["cliHome"] = path.join(userHome, constant.DEFAULT_CLI_HOME);
+  }
+  process.env.CLI_HOME_PATH = cliConfig.cliHome;
 }
 
 // 检查脚手架输入参数
