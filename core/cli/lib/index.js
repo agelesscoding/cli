@@ -10,15 +10,36 @@ const log = require("@agelesscoding/log");
 const constant = require("./const");
 const pkg = require("../package.json");
 
+let args;
+
 async function core() {
   try {
     checkPkgVersion();
     checkNodeVersion();
     await checkRoot();
     await checkUserHome();
+    checkInputArgs();
+    log.verbose("debug", "test debug log");
   } catch (error) {
     log.error(error.message);
   }
+}
+
+// 检查脚手架输入参数
+function checkInputArgs() {
+  const minimist = require("minimist");
+  args = minimist(process.argv.slice(2));
+  checkArgs(args);
+}
+
+// 检查参数
+function checkArgs(args) {
+  if (args?.debug) {
+    process.env.LOG_LEVEL = "verbose";
+  } else {
+    process.env.LOG_LEVEL = "info";
+  }
+  log.level = process.env.LOG_LEVEL;
 }
 
 // 检查用户主目录
