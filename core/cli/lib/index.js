@@ -22,8 +22,28 @@ async function core() {
     checkInputArgs();
     log.verbose("debug", "test debug log");
     await checkEnv();
+    await checkGlobalUpdate();
   } catch (error) {
     log.error(error.message);
+  }
+}
+
+// 检查是否需要更新
+async function checkGlobalUpdate() {
+  // 1. 获取当前版本号和模块名
+  const currentVersion = pkg.version;
+  const npmName = pkg.name;
+  // 2. 调用 npm API，获取最新的版本号，提示用户更新到该版本
+  const { getNpmSemverVersion } = require("@agelesscoding/get-npm-info");
+  const lastVersion = await getNpmSemverVersion(currentVersion, npmName);
+  if (lastVersion && semver.gt(lastVersion, currentVersion)) {
+    log.warn(
+      "有新版本",
+      colors.yellow(
+        `请手动更新 ${npmName}，当前版本：${currentVersion}，最新版本：${lastVersion}`
+      )
+    );
+    log.warn("有新版本", colors.yellow(`更新命令：npm install -g ${npmName}`));
   }
 }
 
@@ -103,7 +123,5 @@ function checkNodeVersion() {
 
 // 检查版本号
 function checkPkgVersion() {
-  log.info("cli", pkg.version);
+  log.notice("cli", pkg.version);
 }
-
-console.log("test");
