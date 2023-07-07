@@ -1,6 +1,6 @@
 {
   "name": "agelesscoding-cli",
-  "private": true,
+  "private": false,
   "workspaces": [
     "core/*",
     "commands/*",
