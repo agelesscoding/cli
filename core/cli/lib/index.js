@@ -105,3 +105,5 @@ function checkNodeVersion() {
 function checkPkgVersion() {
   log.info("cli", pkg.version);
 }
+
+console.log("test");
