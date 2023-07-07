@@ -17,6 +17,9 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "node ./__tests__/core.test.js"
   },
@@ -32,5 +35,5 @@
     "semver": "^7.5.3",
     "user-home": "^3.0.0"
   },
-  "gitHead": "5ec9722b752442c31a7f813ea485719812119dfe"
+  "gitHead": "89f120e106fa6ec5c07e1c7ea805d4e28495ccfc"
 }
