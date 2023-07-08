@@ -6,6 +6,7 @@ const path = require("path");
 const semver = require("semver");
 const colors = require("colors");
 const userHome = require("user-home");
+const commander = require("commander");
 const log = require("@agelesscoding/log");
 
 const constant = require("./const");
@@ -13,19 +14,59 @@ const pkg = require("../package.json");
 
 let args;
 
+// 实例化 commander 对象
+const program = new commander.Command();
+
 async function core() {
   try {
     checkPkgVersion();
     checkNodeVersion();
     await checkRoot();
     await checkUserHome();
-    checkInputArgs();
-    log.verbose("debug", "test debug log");
+    // checkInputArgs();
+    // log.verbose("debug", "test debug log");
     await checkEnv();
     await checkGlobalUpdate();
+    registerCommand();
   } catch (error) {
     log.error(error.message);
   }
+}
+
+// 注册命令
+function registerCommand() {
+  program
+    .version(pkg.version)
+    .name(Object.keys(pkg.bin)[0])
+    .usage("<command> [options]")
+    .option("-d, --debug", "是否开启调试模式", false);
+
+  program.on("option:debug", function (...args) {
+    const opts = this.opts();
+    console.log(opts);
+    if (opts?.debug) process.env.LOG_LEVEL = "verbose";
+    else process.env.LOG_LEVEL = "info";
+    log.level = process.env.LOG_LEVEL;
+    log.verbose("debug", "test debug log");
+  });
+
+  //  监听未知命令
+  program.on("command:*", function (obj) {
+    const availableCommands = program.commands.map((cmd) => cmd.name());
+    log.error("未知的命令：" + obj[0]);
+    if (availableCommands?.length > 0) {
+      log.info("可用命令：" + availableCommands.join(","));
+    }
+  });
+
+  // 打印帮助信息
+  // if (process.argv?.length < 3) {
+  //   program.outputHelp();
+  // }
+
+  program.parse(process.argv);
+
+  if (!program?.args?.length) program.outputHelp();
 }
 
 // 检查是否需要更新
