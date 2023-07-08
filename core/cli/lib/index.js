@@ -47,7 +47,6 @@ function registerCommand() {
     if (opts?.debug) process.env.LOG_LEVEL = "verbose";
     else process.env.LOG_LEVEL = "info";
     log.level = process.env.LOG_LEVEL;
-    log.verbose("debug", "test debug log");
   });
 
   // 设置 targetPath 环境变量

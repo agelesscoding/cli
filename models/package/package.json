@@ -25,5 +25,8 @@
   },
   "bugs": {
     "url": "https://github.com/agelesscoding/cli/issues"
+  },
+  "dependencies": {
+    "@agelesscoding/utils": "file:../../utils/utils"
   }
 }
