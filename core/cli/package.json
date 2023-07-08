@@ -27,6 +27,7 @@
     "@agelesscoding/get-npm-info": "file:../../utils/get-npm-info",
     "@agelesscoding/init": "file:../../commands/init",
     "@agelesscoding/log": "file:../../utils/log",
+    "@agelesscoding/exec": "file:../exec",
     "colors": "^1.4.0",
     "commander": "^11.0.0",
     "dotenv": "^16.3.1",
