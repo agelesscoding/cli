@@ -20,14 +20,7 @@ const program = new commander.Command();
 
 async function core() {
   try {
-    checkPkgVersion();
-    checkNodeVersion();
-    await checkRoot();
-    await checkUserHome();
-    // checkInputArgs();
-    // log.verbose("debug", "test debug log");
-    await checkEnv();
-    await checkGlobalUpdate();
+    await prepare();
     registerCommand();
   } catch (error) {
     log.error(error.message);
@@ -40,20 +33,25 @@ function registerCommand() {
     .version(pkg.version)
     .name(Object.keys(pkg.bin)[0])
     .usage("<command> [options]")
-    .option("-d, --debug", "是否开启调试模式", false);
+    .option("-d, --debug", "是否开启调试模式", false)
+    .option("-tp, --targetPath <targetPath>", "是否指定本地调试文件路径", "");
 
   program
     .command("init [projectName]")
     .option("-f, --force", "是否强制初始化项目")
     .action(init);
 
-  program.on("option:debug", function (...args) {
+  program.on("option:debug", function () {
     const opts = this.opts();
-    console.log(opts);
     if (opts?.debug) process.env.LOG_LEVEL = "verbose";
     else process.env.LOG_LEVEL = "info";
     log.level = process.env.LOG_LEVEL;
     log.verbose("debug", "test debug log");
+  });
+
+  // 设置 targetPath 环境变量
+  program.on("option:targetPath", function () {
+    process.env.CLI_TARGET_PATH = program.getOptionValue("targetPath");
   });
 
   //  监听未知命令
@@ -73,6 +71,15 @@ function registerCommand() {
   program.parse(process.argv);
 
   if (!program?.args?.length) program.outputHelp();
+}
+
+async function prepare() {
+  checkPkgVersion();
+  checkNodeVersion();
+  await checkRoot();
+  await checkUserHome();
+  await checkEnv();
+  await checkGlobalUpdate();
 }
 
 // 检查是否需要更新
@@ -103,7 +110,6 @@ async function checkEnv() {
     dotenv.config({ path: dotenvPath });
   }
   createDefaultConfig();
-  log.verbose("环境变量", process.env.CLI_HOME_PATH);
 }
 
 // 创建默认的配置文件
@@ -117,23 +123,6 @@ function createDefaultConfig() {
     cliConfig["cliHome"] = path.join(userHome, constant.DEFAULT_CLI_HOME);
   }
   process.env.CLI_HOME_PATH = cliConfig.cliHome;
-}
-
-// 检查脚手架输入参数
-function checkInputArgs() {
-  const minimist = require("minimist");
-  args = minimist(process.argv.slice(2));
-  checkArgs(args);
-}
-
-// 检查参数
-function checkArgs(args) {
-  if (args?.debug) {
-    process.env.LOG_LEVEL = "verbose";
-  } else {
-    process.env.LOG_LEVEL = "info";
-  }
-  log.level = process.env.LOG_LEVEL;
 }
 
 // 检查用户主目录
