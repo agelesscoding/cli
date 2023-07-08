@@ -10,7 +10,7 @@ const SETTINGS = {
 };
 
 function exec() {
-  const targetPath = process.env.CLI_TARGET_PATH;
+  let targetPath = process.env.CLI_TARGET_PATH;
 
   const cmdObj = arguments[arguments.length - 1];
   const cmdName = cmdObj.name();
@@ -18,5 +18,11 @@ function exec() {
   const packageName = SETTINGS[cmdName];
   const packageVersion = "latest";
 
+  if (!targetPath) {
+    targetPath = ""; // 生成缓存路径
+  }
+
   const pkg = new Package({ targetPath, packageName, packageVersion });
+  const rootFilePath = pkg.getRootFilePath();
+  console.log("rootFilePath", rootFilePath);
 }

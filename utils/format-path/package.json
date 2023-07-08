@@ -1,7 +1,7 @@
 {
-  "name": "@agelesscoding/package",
+  "name": "@agelesscoding/format-path",
   "version": "0.1.0",
-  "description": "Ageless Coding Models - Package",
+  "description": "> TODO: description",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
   "license": "ISC",
@@ -21,14 +21,9 @@
     "url": "git+https://github.com/agelesscoding/cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/@agelesscoding/package.test.js"
+    "test": "node ./__tests__/@agelesscoding/format-path.test.js"
   },
   "bugs": {
     "url": "https://github.com/agelesscoding/cli/issues"
-  },
-  "dependencies": {
-    "@agelesscoding/utils": "file:../../utils/utils",
-    "@agelesscoding/format-path": "file:../../utils/format-path",
-    "pkg-dir": "^5.0.0"
   }
 }
