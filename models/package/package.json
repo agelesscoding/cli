@@ -28,9 +28,10 @@
   },
   "dependencies": {
     "@agelesscoding/format-path": "file:../../utils/format-path",
-    "@agelesscoding/utils": "file:../../utils/utils",
     "@agelesscoding/get-npm-info": "file:../../utils/get-npm-info",
+    "@agelesscoding/utils": "file:../../utils/utils",
     "npminstall": "^7.9.0",
+    "path-exists": "^5.0.0",
     "pkg-dir": "^5.0.0"
   }
 }

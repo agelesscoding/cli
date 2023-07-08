@@ -8,9 +8,8 @@
     "models/*",
     "utils/*"
   ],
-  "dependencies": {},
   "devDependencies": {
-    "lerna": "^7.1.1"
+    "lerna": "^6.4.1"
   },
   "scripts": {
     "debug": "agelesscoding"

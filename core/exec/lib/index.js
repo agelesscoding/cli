@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("path");
+
 const log = require("@agelesscoding/log");
 const Package = require("@agelesscoding/package");
 
@@ -37,8 +38,9 @@ async function exec() {
       packageVersion,
     });
 
-    if (pkg.exists()) {
+    if (await pkg.exists()) {
       // 更新 package
+      console.log("更新 package");
     } else {
       // 安装 package
       await pkg.install();
@@ -51,6 +53,7 @@ async function exec() {
       packageVersion,
     });
   }
+  console.log("pkg exists", await pkg.exists());
   const rootFilePath = pkg.getRootFilePath();
   if (rootFilePath) require(rootFilePath).apply(null, arguments);
 }

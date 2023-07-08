@@ -6,7 +6,10 @@ const npminstall = require("npminstall");
 
 const { isObject } = require("@agelesscoding/utils");
 const formatPath = require("@agelesscoding/format-path");
-const { getDefaultRegistry } = require("@agelesscoding/get-npm-info");
+const {
+  getDefaultRegistry,
+  getNpmLatestVersion,
+} = require("@agelesscoding/get-npm-info");
 
 class Package {
   constructor(opts) {
@@ -23,11 +26,31 @@ class Package {
     this.packageVersion = opts.packageVersion;
   }
 
+  async prepare() {
+    if (this.packageVersion === "latest") {
+      this.packageVersion = await getNpmLatestVersion(this.packageName);
+    }
+  }
+
+  // 获取缓存路径
+  get cacheFilePath() {
+    return path.resolve(this.storeDir, this.packageName);
+  }
+
   // 判断当前 Package 是否存在
-  exists() {}
+  async exists() {
+    const pathExists = await import("path-exists");
+    if (this.storeDir) {
+      await this.prepare();
+      return pathExists.pathExistsSync(this.cacheFilePath);
+    } else {
+      return pathExists.pathExistsSync(this.targetPath);
+    }
+  }
 
   // 安装 Package
-  install() {
+  async install() {
+    await this.prepare();
     return npminstall({
       root: this.targetPath,
       storeDir: this.storeDir,

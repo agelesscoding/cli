@@ -27,7 +27,7 @@
     "url": "https://github.com/agelesscoding/cli/issues"
   },
   "dependencies": {
-    "@agelesscoding/package": "file: ../../models/package",
-    "@agelesscoding/log": "file: ../../utils/log"
+    "@agelesscoding/log": "file:../../utils/log",
+    "@agelesscoding/package": "file:../../models/package"
   }
 }
