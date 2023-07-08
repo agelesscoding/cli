@@ -27,8 +27,10 @@
     "url": "https://github.com/agelesscoding/cli/issues"
   },
   "dependencies": {
-    "@agelesscoding/utils": "file:../../utils/utils",
     "@agelesscoding/format-path": "file:../../utils/format-path",
+    "@agelesscoding/utils": "file:../../utils/utils",
+    "@agelesscoding/get-npm-info": "file:../../utils/get-npm-info",
+    "npminstall": "^7.9.0",
     "pkg-dir": "^5.0.0"
   }
 }

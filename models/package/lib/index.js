@@ -2,9 +2,11 @@
 
 const path = require("path");
 const pkgDir = require("pkg-dir").sync;
+const npminstall = require("npminstall");
 
 const { isObject } = require("@agelesscoding/utils");
 const formatPath = require("@agelesscoding/format-path");
+const { getDefaultRegistry } = require("@agelesscoding/get-npm-info");
 
 class Package {
   constructor(opts) {
@@ -13,6 +15,8 @@ class Package {
 
     // package 的目标路径
     this.targetPath = opts.targetPath;
+    // 缓存 package 的路径
+    this.storeDir = opts.storeDir;
     // package 的 name
     this.packageName = opts.packageName;
     // package 的 version
@@ -23,7 +27,14 @@ class Package {
   exists() {}
 
   // 安装 Package
-  install() {}
+  install() {
+    return npminstall({
+      root: this.targetPath,
+      storeDir: this.storeDir,
+      registry: getDefaultRegistry(),
+      pkgs: [{ name: this.packageName, version: this.packageVersion }],
+    });
+  }
 
   // 更新 Package
   update() {}

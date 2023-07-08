@@ -25,6 +25,7 @@ async function core() {
     registerCommand();
   } catch (error) {
     log.error(error.message);
+    if (program.getOptionValue("debug")) console.log(error);
   }
 }
 
