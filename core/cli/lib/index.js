@@ -8,6 +8,7 @@ const colors = require("colors");
 const userHome = require("user-home");
 const commander = require("commander");
 const log = require("@agelesscoding/log");
+const init = require("@agelesscoding/init");
 
 const constant = require("./const");
 const pkg = require("../package.json");
@@ -40,6 +41,11 @@ function registerCommand() {
     .name(Object.keys(pkg.bin)[0])
     .usage("<command> [options]")
     .option("-d, --debug", "是否开启调试模式", false);
+
+  program
+    .command("init [projectName]")
+    .option("-f, --force", "是否强制初始化项目")
+    .action(init);
 
   program.on("option:debug", function (...args) {
     const opts = this.opts();
