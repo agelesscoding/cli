@@ -32,6 +32,7 @@
     "@agelesscoding/utils": "file:../../utils/utils",
     "npminstall": "^7.9.0",
     "path-exists": "^5.0.0",
-    "pkg-dir": "^5.0.0"
+    "pkg-dir": "^5.0.0",
+    "semver": "^7.5.4"
   }
 }

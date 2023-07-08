@@ -1,6 +1,8 @@
 "use strict";
 
 const path = require("path");
+const fse = require("fs-extra");
+const semver = require("semver");
 const pkgDir = require("pkg-dir").sync;
 const npminstall = require("npminstall");
 
@@ -27,6 +29,10 @@ class Package {
   }
 
   async prepare() {
+    const pathExists = await import("path-exists");
+    if (this.storeDir && pathExists.pathExistsSync(this.storeDir)) {
+      fse.mkdirpSync(this.storeDir);
+    }
     if (this.packageVersion === "latest") {
       this.packageVersion = await getNpmLatestVersion(this.packageName);
     }
@@ -35,6 +41,20 @@ class Package {
   // 获取缓存路径
   get cacheFilePath() {
     return path.resolve(this.storeDir, this.packageName);
+  }
+
+  // 获取当前 package 的版本号
+  get currentPackageVersion() {
+    // 1. 读取当前 npm 模块的 package.json 文件
+    const currentPkgPath = path.resolve(
+      this.storeDir,
+      this.packageName,
+      "package.json"
+    );
+    // 2. 读取 package.json 文件内容
+    const currentPkgFile = require(currentPkgPath);
+    // 3. 返回版本号
+    return currentPkgFile.version;
   }
 
   // 判断当前 Package 是否存在
@@ -60,7 +80,23 @@ class Package {
   }
 
   // 更新 Package
-  update() {}
+  async update() {
+    await this.prepare();
+    // 1. 获取最新的 npm 模块版本号
+    const latestPackageVersion = await getNpmLatestVersion(this.packageName);
+    // 2. 查询当前 npm 模块版本号
+    const currentPackageVersion = this.currentPackageVersion;
+    // 3. 如果最新版本号大于当前版本号，更新 npm 模块
+    if (semver.gt(latestPackageVersion, currentPackageVersion)) {
+      await npminstall({
+        root: this.targetPath,
+        storeDir: this.storeDir,
+        registry: getDefaultRegistry(),
+        pkgs: [{ name: this.packageName, version: latestPackageVersion }],
+      });
+      this.packageVersion = latestPackageVersion;
+    }
+  }
 
   // 获取入口文件的路径
   getRootFilePath() {

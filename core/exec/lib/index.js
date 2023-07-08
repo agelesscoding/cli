@@ -40,7 +40,7 @@ async function exec() {
 
     if (await pkg.exists()) {
       // 更新 package
-      console.log("更新 package");
+      await pkg.update();
     } else {
       // 安装 package
       await pkg.install();
@@ -53,7 +53,6 @@ async function exec() {
       packageVersion,
     });
   }
-  console.log("pkg exists", await pkg.exists());
   const rootFilePath = pkg.getRootFilePath();
   if (rootFilePath) require(rootFilePath).apply(null, arguments);
 }
