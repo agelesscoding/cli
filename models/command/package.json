@@ -1,6 +1,6 @@
 {
   "name": "@agelesscoding/command",
-  "version": "0.1.0",
+  "version": "0.1.12",
   "description": "Agelesscoding Coding Models - Command",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
@@ -27,8 +27,8 @@
     "url": "https://github.com/agelesscoding/cli/issues"
   },
   "dependencies": {
+    "@agelesscoding/log": "file:../../utils/log",
     "colors": "^1.4.0",
-    "semver": "^7.5.4",
-    "@agelesscoding/log": "file:../../utils/log"
+    "semver": "^7.5.4"
   }
 }
