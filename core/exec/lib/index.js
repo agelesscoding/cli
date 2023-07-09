@@ -1,7 +1,8 @@
 "use strict";
 
 const path = require("path");
-
+const colors = require("colors");
+const cp = require("child_process");
 const log = require("@agelesscoding/log");
 const Package = require("@agelesscoding/package");
 
@@ -57,9 +58,48 @@ async function exec() {
   log.verbose("rootFilePath", rootFilePath);
   if (rootFilePath) {
     try {
-      require(rootFilePath).call(null, Array.from(arguments));
+      // require(rootFilePath).call(null, Array.from(arguments));
+      const args = Array.from(arguments);
+      const cmd = args[args.length - 1];
+      const o = Object.create(null); // 创建一个没有原型链的对象
+      Object.keys(cmd).forEach((key) => {
+        if (
+          cmd.hasOwnProperty(key) &&
+          !key.startsWith("_") &&
+          key !== "parent"
+        ) {
+          o[key] = cmd[key];
+        }
+      });
+      args[args.length - 1] = o;
+
+      const code = `require('${rootFilePath}').call(null, ${JSON.stringify(
+        args
+      )})`;
+      // windows 系统，使用 spawn 执行命令：cp.spawn("cmd", ["/c", "node", "-e", code], { cwd: process.cwd(), stdio: "inherit" });
+      // 非 windows 系统，使用 spawn 执行命令
+      const child = spawn("node", ["-e", code], {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      child.on("error", (e) => {
+        log.error(colors.red(e.message));
+        process.exit(1);
+      });
+      child.on("exit", (e) => {
+        log.verbose("命令执行成功：" + e);
+        process.exit(e);
+      });
     } catch (error) {
       log.error(error.message);
     }
   }
+}
+
+// 兼容 windows 系统和 linux 系统
+function spawn(command, args, options) {
+  const win32 = process.platform === "win32";
+  const cmd = win32 ? "cmd" : command;
+  const cmdArgs = win32 ? ["/c"].concat(command, args) : args;
+  return cp.spawn(cmd, cmdArgs, options || {});
 }
