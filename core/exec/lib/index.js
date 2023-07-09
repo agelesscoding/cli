@@ -54,5 +54,12 @@ async function exec() {
     });
   }
   const rootFilePath = pkg.getRootFilePath();
-  if (rootFilePath) require(rootFilePath).apply(null, arguments);
+  log.verbose("rootFilePath", rootFilePath);
+  if (rootFilePath) {
+    try {
+      require(rootFilePath).call(null, Array.from(arguments));
+    } catch (error) {
+      log.error(error.message);
+    }
+  }
 }

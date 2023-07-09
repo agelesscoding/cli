@@ -9,12 +9,9 @@ const userHome = require("user-home");
 const commander = require("commander");
 const log = require("@agelesscoding/log");
 const exec = require("@agelesscoding/exec");
-const init = require("@agelesscoding/init");
 
 const constant = require("./const");
 const pkg = require("../package.json");
-
-let args;
 
 // 实例化 commander 对象
 const program = new commander.Command();
@@ -76,7 +73,6 @@ function registerCommand() {
 
 async function prepare() {
   checkPkgVersion();
-  checkNodeVersion();
   await checkRoot();
   await checkUserHome();
   await checkEnv();
@@ -142,20 +138,6 @@ async function checkRoot() {
   // - 如果当前操作系统不支持，则返回 undefined。
   const rootCheck = await import("root-check");
   rootCheck.default();
-}
-
-// 检查 Node 版本
-function checkNodeVersion() {
-  // 1. 获取当前 node 版本号
-  const currentVersion = process.version;
-  // 2. 对比最低版本号
-  const lowestVersion = constant.LOWEST_NODE_VERSION;
-  // 3. 如果当前版本号小于等于最低版本号，抛出异常
-  if (!semver.gte(currentVersion, lowestVersion)) {
-    throw new Error(
-      colors.red(`agelesscoding 需要安装 v${lowestVersion} 以上版本的 Node.js`)
-    );
-  }
 }
 
 // 检查版本号

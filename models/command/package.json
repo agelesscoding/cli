@@ -1,7 +1,7 @@
 {
-  "name": "@agelesscoding/init",
-  "version": "0.1.10",
-  "description": "Ageless Coding Commands - init",
+  "name": "@agelesscoding/command",
+  "version": "0.1.0",
+  "description": "Agelesscoding Coding Models - Command",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
   "license": "ISC",
@@ -21,13 +21,14 @@
     "url": "git+https://github.com/agelesscoding/cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/@agelesscoding/init.test.js"
+    "test": "node ./__tests__/@agelesscoding/command.test.js"
   },
   "bugs": {
     "url": "https://github.com/agelesscoding/cli/issues"
   },
   "dependencies": {
-    "@agelesscoding/log": "file:../../utils/log",
-    "@agelesscoding/command": "file:../../models/command"
+    "colors": "^1.4.0",
+    "semver": "^7.5.4",
+    "@agelesscoding/log": "file:../../utils/log"
   }
 }
