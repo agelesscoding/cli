@@ -6,7 +6,7 @@ const Command = require("@agelesscoding/command");
 const InitCommand = class extends Command {
   init() {
     this.projectName = this._argv[0] || "";
-    this.force = !!this._cmd.getOptionValue("force");
+    this.force = !!this._argv[1]?.force;
     log.verbose("projectName", this.projectName);
     log.verbose("force", this.force);
   }
