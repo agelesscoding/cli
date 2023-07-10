@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@agelesscoding/command": "file:../../models/command",
-    "@agelesscoding/log": "file:../../utils/log"
+    "@agelesscoding/log": "file:../../utils/log",
+    "colors": "^1.4.0"
   }
 }
