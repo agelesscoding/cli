@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const fse = require("fs-extra");
 const colors = require("colors");
+const semver = require("semver");
 const log = require("@agelesscoding/log");
 const Command = require("@agelesscoding/command");
 
@@ -102,7 +103,30 @@ const InitCommand = class extends Command {
           message: "请输入项目名称",
           default: "",
           validate: function (v) {
-            return typeof v === "string";
+            // Declare function as asynchronous, and save the done callback
+            const done = this.async();
+
+            // Do async stuff
+            setTimeout(function () {
+              // 1. 输入的首字符必须为英文字符
+              // 2. 尾字符必须为英文或数字，不能为字符
+              // 3. 字符仅允许"-_"
+              // 4. 首尾字符不能为"-_"
+              // Tip: \w => [a-zA-Z0-9_]
+              // 合法：a, a-b, a_b, a-b_c, a_b-c, a1, a-b1-c1, a_b1_c1
+              // 不合法：1, -a, _a, a-, a_, a-1, a_1, a-b-, a_b_, a-b1-c1-, a_b1_c1_
+              if (
+                !/^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])/.test(
+                  v
+                )
+              ) {
+                // Pass the return value in the done callback
+                done("请输入合法的项目名称");
+                return;
+              }
+              // Pass the return value in the done callback
+              done(null, true);
+            }, 0);
           },
           filter: function (v) {
             return v;
@@ -112,12 +136,24 @@ const InitCommand = class extends Command {
           type: "input",
           name: "projectVersion",
           message: "请输入项目版本号",
-          default: "",
+          default: "1.0.0",
           validate: function (v) {
-            return typeof v === "string";
+            // Declare function as asynchronous, and save the done callback
+            const done = this.async();
+
+            // Do async stuff
+            setTimeout(function () {
+              if (!!!semver.valid(v)) {
+                // Pass the return value in the done callback
+                done("请输入合法的项目名称");
+                return;
+              }
+              // Pass the return value in the done callback
+              done(null, true);
+            }, 0);
           },
           filter: function (v) {
-            return v;
+            return !!semver.valid(v) ? semver.valid(v) : v;
           },
         },
       ]);
