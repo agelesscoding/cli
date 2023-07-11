@@ -29,6 +29,8 @@
   "dependencies": {
     "@agelesscoding/command": "file:../../models/command",
     "@agelesscoding/log": "file:../../utils/log",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "fs-extra": "^11.1.1",
+    "inquirer": "^9.2.7"
   }
 }
