@@ -7,6 +7,9 @@ const colors = require("colors");
 const log = require("@agelesscoding/log");
 const Command = require("@agelesscoding/command");
 
+const TYPE_PROJECT = "project";
+const TYPE_COMPONENT = "component";
+
 const InitCommand = class extends Command {
   init() {
     this.projectName = this._argv[0] || "";
@@ -16,6 +19,8 @@ const InitCommand = class extends Command {
   }
 
   async exec() {
+    const inquirer = (await import("inquirer")).default;
+    this.inquirer = inquirer;
     try {
       // 1. 准备阶段
       const ret = await this.prepare();
@@ -33,12 +38,11 @@ const InitCommand = class extends Command {
     // 1. 判断当前目录是否为空
     const localPath = process.cwd(); // 获取当前命令执行时所在的目录，也可以使用 path.resolve(".") 获取
     if (!this.isDirEmpty(localPath)) {
-      const inquirer = (await import("inquirer")).default;
       let isContinue = false;
       // 1.1 询问是否继续创建
       if (!this.force) {
         isContinue = (
-          await inquirer.prompt([
+          await this.inquirer.prompt([
             {
               type: "confirm",
               name: "isContinue",
@@ -49,9 +53,10 @@ const InitCommand = class extends Command {
         ).isContinue;
         if (!isContinue) return;
       }
+      // 2. 是否启动强制更新
       if (isContinue || this.force) {
-        // 1.2 给用户做二次确认
-        const { confirmDelete } = await inquirer.prompt([
+        // 2.1 给用户做二次确认
+        const { confirmDelete } = await this.inquirer.prompt([
           {
             type: "confirm",
             name: "confirmDelete",
@@ -65,9 +70,64 @@ const InitCommand = class extends Command {
         }
       }
     }
-    // 2. 是否启动强制更新
-    // 3. 选择创建项目的类型
-    // 4. 获取项目的基本信息
+    return this.getProjectInfo();
+  }
+
+  async getProjectInfo() {
+    const projectInfo = {};
+    // 1. 选择创建项目的类型
+    const { type } = await this.inquirer.prompt({
+      type: "list",
+      name: "type",
+      message: "请选择初始化项目类型",
+      default: TYPE_PROJECT,
+      choices: [
+        {
+          name: "项目",
+          value: TYPE_PROJECT,
+        },
+        {
+          name: "组件",
+          value: TYPE_COMPONENT,
+        },
+      ],
+    });
+
+    if (type === TYPE_PROJECT) {
+      // 2. 获取项目的基本信息
+      const o = await this.inquirer.prompt([
+        {
+          type: "input",
+          name: "projectName",
+          message: "请输入项目名称",
+          default: "",
+          validate: function (v) {
+            return typeof v === "string";
+          },
+          filter: function (v) {
+            return v;
+          },
+        },
+        {
+          type: "input",
+          name: "projectVersion",
+          message: "请输入项目版本号",
+          default: "",
+          validate: function (v) {
+            return typeof v === "string";
+          },
+          filter: function (v) {
+            return v;
+          },
+        },
+      ]);
+      console.log("o", o);
+    } else if (type === TYPE_COMPONENT) {
+    } else {
+    }
+    log.verbose("type", type);
+    // return 项目的基本信息（object）
+    return projectInfo;
   }
 
   // 判断当前目录是否为空
