@@ -18,8 +18,6 @@ const TYPE_COMPONENT = "component";
 const TEMPLATE_TYPE_NORMAL = "normal"; // 标准模板
 const TEMPLATE_TYPE_CUSTOM = "custom"; // 自定义模板
 const WHITE_COMMAND = ["npm", "cnpm"]; // 白名单命令
-const TEMPLATE_URL =
-  "https://cdn.jsdelivr.net/gh/agelesscoding/cli-template@main/templates.json";
 
 const InitCommand = class extends Command {
   init() {
@@ -68,6 +66,26 @@ const InitCommand = class extends Command {
     }
   }
 
+  async execCommand(command, errMsg) {
+    let result;
+    if (command && command.length > 0) {
+      const cmdArray = command.split(" ");
+
+      const cmd = this.checkCommand(cmdArray[0]);
+      if (!cmd) throw new Error(colors.red(`该命令不存在：${command}`));
+
+      const args = cmdArray.slice(1);
+      result = await execAsync(cmd, args, {
+        stdio: "inherit",
+        cwd: process.cwd(),
+      });
+    }
+    if (result !== 0) {
+      throw new Error(colors.red(errMsg));
+    }
+    return result;
+  }
+
   // 安装标准模板
   async installNormalTemplate() {
     log.verbose("templateNpm", this.templateNpm);
@@ -99,38 +117,18 @@ const InitCommand = class extends Command {
     }
 
     // 2. 依赖安装
-    let installResult;
     if (!this.templateInfo.installCommand) {
-      this.templateInfo.installCommand = "cnpm install"; // 默认使用 npm 安装依赖
+      this.templateInfo.installCommand = "npm install"; // 默认使用 npm 安装依赖
     }
     const { installCommand } = this.templateInfo;
-    if (installCommand && installCommand.length > 0) {
-      const installCmd = installCommand.split(" ");
-      const cmd = this.checkCommand(installCmd[0]);
-      const args = installCmd.slice(1);
-      installResult = await execAsync(cmd, args, {
-        stdio: "inherit",
-        cwd: process.cwd(),
-      });
-    }
-    if (installResult !== 0) {
-      throw new Error(colors.red("依赖安装失败！"));
-    }
+    await this.execCommand(installCommand, "依赖安装失败！");
 
     // 3. 启动命令执行
     if (!this.templateInfo.startCommand) {
       this.templateInfo.startCommand = "npm run serve"; // 默认使用 npm run serve 启动项目
     }
     const { startCommand } = this.templateInfo;
-    if (startCommand && startCommand.length > 0) {
-      const startCmd = startCommand.split(" ");
-      const cmd = this.checkCommand(startCmd[0]);
-      const args = startCmd.slice(1);
-      installResult = await execAsync(cmd, args, {
-        stdio: "inherit",
-        cwd: process.cwd(),
-      });
-    }
+    await this.execCommand(startCommand, "启动命令执行失败！");
   }
 
   // 检查命令是否存在白名单中
