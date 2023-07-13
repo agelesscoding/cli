@@ -71,14 +71,24 @@ const InitCommand = class extends Command {
     if (!(await templateNpm.exists())) {
       const spinner = spinnerStart("正在下载模板...");
       await sleep(); // 中断 1s，让用户看到下载的效果
-      await templateNpm.install();
-      spinner.stop(true);
+      try {
+        await templateNpm.install();
+      } catch (error) {
+        throw error;
+      } finally {
+        spinner.stop(true);
+      }
       log.success("下载模板成功");
     } else {
       const spinner = spinnerStart("正在更新模板...");
       await sleep(); // 中断 1s，让用户看到下载的效果
-      templateNpm.update();
-      spinner.stop(true);
+      try {
+        await templateNpm.update();
+      } catch (error) {
+        throw error;
+      } finally {
+        spinner.stop(true);
+      }
       log.success("更新模板成功");
     }
     // 1. 通过项目模板 API 获取项目模板信息
@@ -160,7 +170,7 @@ const InitCommand = class extends Command {
           type: "input",
           name: "projectName",
           message: "请输入项目名称",
-          default: "",
+          default: "project",
           validate: function (v) {
             // Declare function as asynchronous, and save the done callback
             const done = this.async();
