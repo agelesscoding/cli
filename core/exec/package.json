@@ -29,6 +29,7 @@
   "dependencies": {
     "@agelesscoding/log": "file:../../utils/log",
     "@agelesscoding/package": "file:../../models/package",
+    "@agelesscoding/utils": "file:../../models/utils",
     "colors": "^1.4.0"
   }
 }

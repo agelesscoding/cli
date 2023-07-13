@@ -2,9 +2,9 @@
 
 const path = require("path");
 const colors = require("colors");
-const cp = require("child_process");
 const log = require("@agelesscoding/log");
 const Package = require("@agelesscoding/package");
+const { exec: spawn } = require("@agelesscoding/utils");
 
 module.exports = exec;
 
@@ -94,12 +94,4 @@ async function exec() {
       log.error(error.message);
     }
   }
-}
-
-// 兼容 windows 系统和 linux 系统
-function spawn(command, args, options) {
-  const win32 = process.platform === "win32";
-  const cmd = win32 ? "cmd" : command;
-  const cmdArgs = win32 ? ["/c"].concat(command, args) : args;
-  return cp.spawn(cmd, cmdArgs, options || {});
 }

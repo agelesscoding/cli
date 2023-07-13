@@ -9,7 +9,7 @@ const userHome = require("user-home");
 const log = require("@agelesscoding/log");
 const Command = require("@agelesscoding/command");
 const Package = require("@agelesscoding/package");
-const { spinnerStart, sleep } = require("@agelesscoding/utils");
+const { spinnerStart, sleep, execAsync } = require("@agelesscoding/utils");
 
 const getProjectTemplate = require("./getProjectTemplate");
 
@@ -17,6 +17,7 @@ const TYPE_PROJECT = "project";
 const TYPE_COMPONENT = "component";
 const TEMPLATE_TYPE_NORMAL = "normal"; // 标准模板
 const TEMPLATE_TYPE_CUSTOM = "custom"; // 自定义模板
+const WHITE_COMMAND = ["npm", "cnpm"]; // 白名单命令
 const TEMPLATE_URL =
   "https://cdn.jsdelivr.net/gh/agelesscoding/cli-template@main/templates.json";
 
@@ -69,6 +70,9 @@ const InitCommand = class extends Command {
 
   // 安装标准模板
   async installNormalTemplate() {
+    log.verbose("templateNpm", this.templateNpm);
+
+    // 1. 拷贝模板代码至当前目录
     const spinner = spinnerStart("正在安装模板...");
     await sleep(); // 中断 1s，让用户看到安装的效果
 
@@ -93,6 +97,46 @@ const InitCommand = class extends Command {
       spinner.stop(true);
       log.success("安装模板成功");
     }
+
+    // 2. 依赖安装
+    let installResult;
+    if (!this.templateInfo.installCommand) {
+      this.templateInfo.installCommand = "cnpm install"; // 默认使用 npm 安装依赖
+    }
+    const { installCommand } = this.templateInfo;
+    if (installCommand && installCommand.length > 0) {
+      const installCmd = installCommand.split(" ");
+      const cmd = this.checkCommand(installCmd[0]);
+      const args = installCmd.slice(1);
+      installResult = await execAsync(cmd, args, {
+        stdio: "inherit",
+        cwd: process.cwd(),
+      });
+    }
+    if (installResult !== 0) {
+      throw new Error(colors.red("依赖安装失败！"));
+    }
+
+    // 3. 启动命令执行
+    if (!this.templateInfo.startCommand) {
+      this.templateInfo.startCommand = "npm run serve"; // 默认使用 npm run serve 启动项目
+    }
+    const { startCommand } = this.templateInfo;
+    if (startCommand && startCommand.length > 0) {
+      const startCmd = startCommand.split(" ");
+      const cmd = this.checkCommand(startCmd[0]);
+      const args = startCmd.slice(1);
+      installResult = await execAsync(cmd, args, {
+        stdio: "inherit",
+        cwd: process.cwd(),
+      });
+    }
+  }
+
+  // 检查命令是否存在白名单中
+  checkCommand(cmd) {
+    if (WHITE_COMMAND.includes(cmd)) return cmd;
+    return null;
   }
 
   // 安装自定义模板
