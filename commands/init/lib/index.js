@@ -15,6 +15,8 @@ const getProjectTemplate = require("./getProjectTemplate");
 
 const TYPE_PROJECT = "project";
 const TYPE_COMPONENT = "component";
+const TEMPLATE_TYPE_NORMAL = "normal"; // 标准模板
+const TEMPLATE_TYPE_CUSTOM = "custom"; // 自定义模板
 const TEMPLATE_URL =
   "https://cdn.jsdelivr.net/gh/agelesscoding/cli-template@main/templates.json";
 
@@ -38,10 +40,41 @@ const InitCommand = class extends Command {
         this.projectInfo = projectInfo;
         await this.downloadTemplate();
         // 3. 安装模板
+        await this.installTemplate();
       }
     } catch (error) {
       log.error(colors.red(error.message));
     }
+  }
+
+  async installTemplate() {
+    log.verbose("templateInfo", this.templateInfo);
+    if (this?.templateInfo) {
+      if (!this.templateInfo?.type) {
+        this.templateInfo.type = TEMPLATE_TYPE_NORMAL;
+      }
+      if (this.templateInfo.type === TEMPLATE_TYPE_NORMAL) {
+        // 标准安装
+        await this.installNormalTemplate();
+      } else if (this.templateInfo.type === TEMPLATE_TYPE_CUSTOM) {
+        // 自定义安装
+        await this.installCustomTemplate();
+      } else {
+        throw new Error(colors.red("无法识别项目模板类型！"));
+      }
+    } else {
+      throw new Error(colors.red("项目模板信息不存在！"));
+    }
+  }
+
+  // 安装标准模板
+  async installNormalTemplate() {
+    console.log("安装标准模板");
+  }
+
+  // 安装自定义模板
+  async installCustomTemplate() {
+    console.log("安装自定义模板");
   }
 
   async downloadTemplate() {
@@ -49,6 +82,7 @@ const InitCommand = class extends Command {
     const templateInfo = this.template.find(
       (item) => item.npmName === projectTemplate
     );
+    this.templateInfo = templateInfo;
     const targetPath = path.resolve(userHome, ".agelesscoding", "templates");
     const storeDir = path.resolve(
       userHome,
@@ -73,8 +107,8 @@ const InitCommand = class extends Command {
         throw error;
       } finally {
         spinner.stop(true);
+        if (await templateNpm.exists()) log.success("下载模板成功");
       }
-      log.success("下载模板成功");
     } else {
       const spinner = spinnerStart("正在更新模板...");
       await sleep(); // 中断 1s，让用户看到下载的效果
@@ -84,8 +118,8 @@ const InitCommand = class extends Command {
         throw error;
       } finally {
         spinner.stop(true);
+        if (await templateNpm.exists()) log.success("更新模板成功");
       }
-      log.success("更新模板成功");
     }
     // 1. 通过项目模板 API 获取项目模板信息
     // 1.1 通过 egg.js 搭建一套后端系统
