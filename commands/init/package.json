@@ -27,12 +27,15 @@
     "url": "https://github.com/agelesscoding/cli/issues"
   },
   "dependencies": {
-    "@agelesscoding/command": "file:../../models/command",
     "@agelesscoding/log": "file:../../utils/log",
-    "@agelesscoding/utils": "file:../../utils/request",
+    "@agelesscoding/utils": "file:../../utils/utils",
+    "@agelesscoding/request": "file:../../utils/request",
+    "@agelesscoding/command": "file:../../models/command",
+    "@agelesscoding/package": "file:../../models/package",
     "colors": "^1.4.0",
     "fs-extra": "^11.1.1",
     "inquirer": "^9.2.7",
-    "semver": "^7.5.4"
+    "semver": "^7.5.4",
+    "user-home": "^3.0.0"
   }
 }
