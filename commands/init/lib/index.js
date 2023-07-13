@@ -45,14 +45,10 @@ const InitCommand = class extends Command {
   }
 
   async downloadTemplate() {
-    console.log("projectInfo", this.projectInfo);
-    console.log("template", this.template);
     const { projectTemplate } = this.projectInfo;
     const templateInfo = this.template.find(
       (item) => item.npmName === projectTemplate
     );
-    console.log("templateInfo", templateInfo);
-    console.log("userHome", userHome);
     const targetPath = path.resolve(userHome, ".agelesscoding", "templates");
     const storeDir = path.resolve(
       userHome,
@@ -67,7 +63,7 @@ const InitCommand = class extends Command {
       packageName: npmName,
       packageVersion: version,
     });
-    console.log("templateNpm", templateNpm);
+    log.verbose("templateNpm", templateNpm);
     if (!(await templateNpm.exists())) {
       const spinner = spinnerStart("正在下载模板...");
       await sleep(); // 中断 1s，让用户看到下载的效果
