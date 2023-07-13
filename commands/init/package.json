@@ -1,6 +1,6 @@
 {
   "name": "@agelesscoding/init",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Ageless Coding Commands - init",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
@@ -27,11 +27,11 @@
     "url": "https://github.com/agelesscoding/cli/issues"
   },
   "dependencies": {
-    "@agelesscoding/log": "file:../../utils/log",
-    "@agelesscoding/utils": "file:../../utils/utils",
-    "@agelesscoding/request": "file:../../utils/request",
     "@agelesscoding/command": "file:../../models/command",
+    "@agelesscoding/log": "file:../../utils/log",
     "@agelesscoding/package": "file:../../models/package",
+    "@agelesscoding/request": "file:../../utils/request",
+    "@agelesscoding/utils": "file:../../utils/utils",
     "colors": "^1.4.0",
     "fs-extra": "^11.1.1",
     "inquirer": "^9.2.7",
