@@ -178,6 +178,12 @@ const InitCommand = class extends Command {
             return !!semver.valid(v) ? semver.valid(v) : v;
           },
         },
+        {
+          type: "list",
+          name: "projectTemplate",
+          message: "请选择项目模板",
+          choices: this.createTemplateChoices(),
+        },
       ]);
       projectInfo = { type, ...project };
     } else if (type === TYPE_COMPONENT) {
@@ -197,6 +203,14 @@ const InitCommand = class extends Command {
         (file) => !file.startsWith(".") && ["node_modules"].indexOf(file) < 0
       );
     return !fileList || fileList.length <= 0;
+  }
+
+  // 创建项目模板的选择列表
+  createTemplateChoices() {
+    return this.template.map((item) => ({
+      value: item.npmName,
+      name: item.name,
+    }));
   }
 };
 
