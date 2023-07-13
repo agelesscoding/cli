@@ -69,7 +69,30 @@ const InitCommand = class extends Command {
 
   // 安装标准模板
   async installNormalTemplate() {
-    console.log("安装标准模板");
+    const spinner = spinnerStart("正在安装模板...");
+    await sleep(); // 中断 1s，让用户看到安装的效果
+
+    try {
+      const templatePath = this.templateNpm.cacheFilePath;
+      const targetPath = process.cwd(); // 当前进程执行时所在的目录
+
+      fse.ensureDirSync(templatePath); // 确保模板目录存在（注意：这里的模板目录是一个软连接目录）
+      fse.ensureDirSync(targetPath); // 确保目标目录存在
+      // 将模板目录下的文件拷贝到当前目录
+      fse.copySync(templatePath, targetPath, {
+        // 复制过程中，软链接会被解引用，也就是说，复制的是软链接指向的实际文件或目录，而不是软链接本身
+        dereference: true, // 拷贝软链接
+      });
+      // 删除目标目录下的 node_modules
+      if (fse.pathExistsSync(path.resolve(targetPath, "node_modules"))) {
+        fse.removeSync(path.resolve(targetPath, "node_modules"));
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      spinner.stop(true);
+      log.success("安装模板成功");
+    }
   }
 
   // 安装自定义模板
@@ -108,6 +131,7 @@ const InitCommand = class extends Command {
       } finally {
         spinner.stop(true);
         if (await templateNpm.exists()) log.success("下载模板成功");
+        this.templateNpm = templateNpm; // 缓存模板模块
       }
     } else {
       const spinner = spinnerStart("正在更新模板...");
@@ -119,6 +143,7 @@ const InitCommand = class extends Command {
       } finally {
         spinner.stop(true);
         if (await templateNpm.exists()) log.success("更新模板成功");
+        this.templateNpm = templateNpm; // 缓存模板模块
       }
     }
     // 1. 通过项目模板 API 获取项目模板信息
