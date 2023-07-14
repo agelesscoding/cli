@@ -1,6 +1,6 @@
 {
   "name": "@agelesscoding/get-npm-info",
-  "version": "0.1.11",
+  "version": "0.1.17",
   "description": "Ageless Coding Utils - get npm info",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
