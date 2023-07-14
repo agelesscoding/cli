@@ -1,10 +1,12 @@
 "use strict";
 
 const fs = require("fs");
+const ejs = require("ejs");
 const path = require("path");
 const fse = require("fs-extra");
 const colors = require("colors");
 const semver = require("semver");
+const { globSync } = require("glob");
 const userHome = require("user-home");
 const log = require("@agelesscoding/log");
 const Command = require("@agelesscoding/command");
@@ -43,6 +45,7 @@ const InitCommand = class extends Command {
       }
     } catch (error) {
       log.error(colors.red(error.message));
+      if (process.env.LOG_LEVEL === "verbose") console.log(error);
     }
   }
 
@@ -86,6 +89,34 @@ const InitCommand = class extends Command {
     return result;
   }
 
+  // 模板渲染
+  async ejsRender(opts) {
+    const dir = process.cwd();
+    const files = globSync("**", {
+      cwd: dir,
+      ignore: opts.ignore || "",
+      nodir: true,
+    });
+
+    Promise.all(
+      files.map((file) => {
+        const filePath = path.join(dir, file);
+        return new Promise((resolve1, reject1) => {
+          ejs.renderFile(filePath, this.projectInfo, (err, result) => {
+            if (err) {
+              reject1(err);
+            } else {
+              fse.writeFileSync(filePath, result);
+              resolve1(result);
+            }
+          });
+        });
+      })
+    )
+      .then()
+      .catch((err) => reject(err));
+  }
+
   // 安装标准模板
   async installNormalTemplate() {
     log.verbose("templateNpm", this.templateNpm);
@@ -118,6 +149,9 @@ const InitCommand = class extends Command {
       spinner.stop(true);
       log.success("安装模板成功");
     }
+
+    const ignore = ["node_modules/**", "public/**"];
+    await this.ejsRender({ ignore }); // 模板渲染
 
     // 2. 依赖安装
     if (!this.templateInfo.installCommand) {
@@ -332,7 +366,14 @@ const InitCommand = class extends Command {
     } else {
     }
     log.verbose("type", type);
-    // return 项目的基本信息（object）
+    if (projectInfo.projectName) {
+      projectInfo.pkgName = require("kebab-case")(
+        projectInfo.projectName
+      ).replace(/^-/, "");
+    }
+    if (projectInfo.projectVersion) {
+      projectInfo.pkgVersion = projectInfo.projectVersion;
+    }
     return projectInfo;
   }
 
