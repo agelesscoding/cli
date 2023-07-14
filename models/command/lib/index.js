@@ -4,7 +4,7 @@ const colors = require("colors");
 const semver = require("semver");
 const log = require("@agelesscoding/log");
 
-const LOWEST_NODE_VERSION = "18.0.0"; // 最低 Node 版本号
+const LOWEST_NODE_VERSION = "16.20.1"; // 最低 Node 版本号
 
 class Command {
   constructor(argv) {
