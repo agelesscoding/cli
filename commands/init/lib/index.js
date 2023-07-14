@@ -150,7 +150,8 @@ const InitCommand = class extends Command {
       log.success("安装模板成功");
     }
 
-    const ignore = ["node_modules/**", "public/**"];
+    const templateIgnore = this.templateInfo.ignore || [];
+    const ignore = ["**/node_modules/**", ...templateIgnore];
     await this.ejsRender({ ignore }); // 模板渲染
 
     // 2. 依赖安装
@@ -292,6 +293,12 @@ const InitCommand = class extends Command {
       ],
     });
 
+    log.verbose("type", type);
+
+    this.template = this.template.filter((template) => {
+      return template.tag.includes(type);
+    });
+
     if (type === TYPE_PROJECT) {
       // 2. 获取项目的基本信息
       let project = {};
@@ -378,7 +385,7 @@ const InitCommand = class extends Command {
     } else if (type === TYPE_COMPONENT) {
     } else {
     }
-    log.verbose("type", type);
+
     if (projectInfo.projectName) {
       projectInfo.pkgName = require("kebab-case")(
         projectInfo.projectName
