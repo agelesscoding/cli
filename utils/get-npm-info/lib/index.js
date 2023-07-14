@@ -5,7 +5,7 @@ const semver = require("semver");
 
 async function getNpmInfo(npmName, registry) {
   if (!npmName) return null;
-  const registryUrl = registry || getDefaultRegistry();
+  const registryUrl = registry || getDefaultRegistry(true);
   const urlJoin = (await import("url-join")).default;
   const npmInfoUrl = urlJoin(registryUrl, npmName);
   return axios

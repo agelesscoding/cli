@@ -95,7 +95,10 @@ const InitCommand = class extends Command {
     await sleep(); // 中断 1s，让用户看到安装的效果
 
     try {
-      const templatePath = this.templateNpm.cacheFilePath;
+      const templatePath = path.resolve(
+        this.templateNpm.cacheFilePath,
+        "template"
+      );
       const targetPath = process.cwd(); // 当前进程执行时所在的目录
 
       fse.ensureDirSync(templatePath); // 确保模板目录存在（注意：这里的模板目录是一个软连接目录）
@@ -188,11 +191,6 @@ const InitCommand = class extends Command {
         this.templateNpm = templateNpm; // 缓存模板模块
       }
     }
-    // 1. 通过项目模板 API 获取项目模板信息
-    // 1.1 通过 egg.js 搭建一套后端系统
-    // 1.2 通过 npm 存储项目模板
-    // 1.3 将项目模板信息存储到 mongodb 数据库中
-    // 1.4 通过 egg.js 获取 mongodb 中的数据并且通过 api 返回
   }
 
   async prepare() {
