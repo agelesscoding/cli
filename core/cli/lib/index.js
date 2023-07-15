@@ -29,14 +29,18 @@ async function core() {
 // 注册命令
 function registerCommand() {
   program
-    .version(pkg.version)
+    .version(pkg.version, "-V, --version", "输出版本号")
     .name(Object.keys(pkg.bin)[0])
+    .alias(Object.keys(pkg.bin)[1])
     .usage("<command> [options]")
     .option("-d, --debug", "是否开启调试模式", false)
-    .option("-tp, --targetPath <targetPath>", "是否指定本地调试文件路径", "");
+    .option("-tp, --targetPath <targetPath>", "是否指定本地调试文件路径", "")
+    .helpOption("-h, --help", "显示帮助信息")
+    .addHelpCommand("help [command]", "显示命令帮助信息");
 
   program
     .command("init [projectName]")
+    .description("初始化项目")
     .option("-f, --force", "是否强制初始化项目")
     .action(exec);
 
