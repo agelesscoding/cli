@@ -1,12 +1,27 @@
-# 快速开始
+# `@agelesscoding/cli`
 
-## 1. 安装依赖
+![Screen Shot](./core/cli/screenshot.gif)
 
-```shell
-$ npm i # or npm i <external-module> -w packages/<package-name>
+## Quick Start
+
+First, you need to install the scaffolding globally:
+
+```bash
+$ npm install -g @agelesscoding/cli
 ```
 
-## 2. 本地开发 & 测试
+Then, you can use the `agelesscoding` or `agc` command to create a project:
 
-1. 进入 `/core/cli` 目录，执行 `npm link`，会在全局注册脚手架。
-2. 在 vscode 中，点击调试 `debug` 即可进入调试模式，调试本地 `cli` 的执行过程。
+```bash
+$ mkdir demo && cd demo
+$ agc init # or agc init [projectName]
+```
+
+**Tip**: In the scaffolding's interactive interface, you can choose the built-in project template, or choose to develop a template yourself. Then, wait for the scaffolding to install the template to your project directory, and you can start development.
+
+Happy coding ;-)
+
+## Local Develop
+
+1. Enter the `/core/cli` directory and execute `npm link`, which will register the scaffolding globally.
+2. In vscode, click debug to enter the debugging mode, and debug the execution process of the local `cli`.
