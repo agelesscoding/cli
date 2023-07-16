@@ -7,7 +7,8 @@ const fse = require("fs-extra");
 const colors = require("colors");
 const semver = require("semver");
 const { globSync } = require("glob");
-const userHome = require("user-home");
+const { homedir: userHome } = require("os");
+
 const log = require("@agelesscoding/log");
 const Command = require("@agelesscoding/command");
 const Package = require("@agelesscoding/package");
@@ -220,9 +221,9 @@ const InitCommand = class extends Command {
       (item) => item.npmName === projectTemplate
     );
     this.templateInfo = templateInfo;
-    const targetPath = path.resolve(userHome, ".agelesscoding", "templates");
+    const targetPath = path.resolve(userHome(), ".agelesscoding", "templates");
     const storeDir = path.resolve(
-      userHome,
+      userHome(),
       ".agelesscoding",
       "templates",
       "node_modules"

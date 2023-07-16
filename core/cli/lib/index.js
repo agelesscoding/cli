@@ -5,8 +5,9 @@ module.exports = core;
 const path = require("path");
 const semver = require("semver");
 const colors = require("colors");
-const userHome = require("user-home");
 const commander = require("commander");
+const { homedir: userHome } = require("os");
+
 const log = require("@agelesscoding/log");
 const exec = require("@agelesscoding/exec");
 
@@ -105,7 +106,7 @@ async function checkGlobalUpdate() {
 // 检查环境变量
 async function checkEnv() {
   const dotenv = require("dotenv");
-  const dotenvPath = path.resolve(userHome, ".agelesscoding");
+  const dotenvPath = path.resolve(userHome(), ".agelesscoding");
   const pathExists = await import("path-exists");
   if (pathExists.pathExistsSync(dotenvPath)) {
     dotenv.config({ path: dotenvPath });
@@ -116,12 +117,12 @@ async function checkEnv() {
 // 创建默认的配置文件
 function createDefaultConfig() {
   const cliConfig = {
-    home: userHome, // 用户主目录，如：/Users/agelesscoding（暂时用不到）
+    home: userHome(), // 用户主目录，如：/Users/agelesscoding（暂时用不到）
   };
   if (process.env.CLI_HOME) {
-    cliConfig["cliHome"] = path.join(userHome, process.env.CLI_HOME);
+    cliConfig["cliHome"] = path.join(userHome(), process.env.CLI_HOME);
   } else {
-    cliConfig["cliHome"] = path.join(userHome, constant.DEFAULT_CLI_HOME);
+    cliConfig["cliHome"] = path.join(userHome(), constant.DEFAULT_CLI_HOME);
   }
   process.env.CLI_HOME_PATH = cliConfig.cliHome;
 }
@@ -129,7 +130,8 @@ function createDefaultConfig() {
 // 检查用户主目录
 async function checkUserHome() {
   const pathExists = await import("path-exists");
-  if (!userHome || !pathExists.pathExistsSync(userHome)) {
+  console.log("userHome", userHome());
+  if (!userHome() || !pathExists.pathExistsSync(userHome())) {
     throw new Error(colors.red("当前登录用户主目录不存在！"));
   }
 }
