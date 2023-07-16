@@ -158,17 +158,24 @@ const InitCommand = class extends Command {
 
     // 2. 依赖安装
     if (!this.templateInfo.installCommand) {
+      log.success(
+        colors.bold(colors.green("准备就绪，请自行安装依赖并启动项目 ;-)"))
+      );
+      return;
       this.templateInfo.installCommand = "npm install"; // 默认使用 npm 安装依赖
+    } else {
+      const { installCommand } = this.templateInfo;
+      await this.execCommand(installCommand, "依赖安装失败！");
     }
-    const { installCommand } = this.templateInfo;
-    await this.execCommand(installCommand, "依赖安装失败！");
 
     // 3. 启动命令执行
     if (!this.templateInfo.startCommand) {
+      return;
       this.templateInfo.startCommand = "npm run serve"; // 默认使用 npm run serve 启动项目
+    } else {
+      const { startCommand } = this.templateInfo;
+      await this.execCommand(startCommand, "启动命令执行失败！");
     }
-    const { startCommand } = this.templateInfo;
-    await this.execCommand(startCommand, "启动命令执行失败！");
   }
 
   // 检查命令是否存在白名单中
