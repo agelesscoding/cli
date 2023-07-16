@@ -130,7 +130,6 @@ function createDefaultConfig() {
 // 检查用户主目录
 async function checkUserHome() {
   const pathExists = await import("path-exists");
-  console.log("userHome", userHome());
   if (!userHome() || !pathExists.pathExistsSync(userHome())) {
     throw new Error(colors.red("当前登录用户主目录不存在！"));
   }
