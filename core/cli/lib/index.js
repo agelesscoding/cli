@@ -3,16 +3,21 @@
 module.exports = core;
 
 const path = require("path");
-const semver = require("semver");
+const fse = require("fs-extra");
 const colors = require("colors");
+const dotenv = require("dotenv");
+const semver = require("semver");
 const commander = require("commander");
 const { homedir: userHome } = require("os");
 
 const log = require("@agelesscoding/log");
 const exec = require("@agelesscoding/exec");
+const i18n = require("@agelesscoding/i18n");
 
 const constant = require("./const");
 const pkg = require("../package.json");
+
+const dotenvPath = path.resolve(userHome(), ".agelesscoding", ".env"); // 环境变量配置文件路径
 
 // 实例化 commander 对象
 const program = new commander.Command();
@@ -30,19 +35,19 @@ async function core() {
 // 注册命令
 function registerCommand() {
   program
-    .version(pkg.version, "-V, --version", "输出版本号")
+    .version(pkg.version, "-V, --version", i18n.t("version"))
     .name(Object.keys(pkg.bin)[0])
     .alias(Object.keys(pkg.bin)[1])
     .usage("<command> [options]")
-    .option("-d, --debug", "是否开启调试模式", false)
-    .option("-tp, --targetPath <targetPath>", "是否指定本地调试文件路径", "")
-    .helpOption("-h, --help", "显示帮助信息")
-    .addHelpCommand("help [command]", "显示命令帮助信息");
+    .option("-d, --debug", i18n.t("debug"), false)
+    .option("-tp, --targetPath <targetPath>", i18n.t("targetPath"), "")
+    .helpOption("-h, --help", i18n.t("help"))
+    .addHelpCommand("help [command]", i18n.t("showHelp"));
 
   program
     .command("init [projectName]")
-    .description("初始化项目")
-    .option("-f, --force", "是否强制初始化项目")
+    .description(i18n.t("init"))
+    .option("-f, --force", i18n.t("force"))
     .action(exec);
 
   program.on("option:debug", function () {
@@ -60,9 +65,11 @@ function registerCommand() {
   //  监听未知命令
   program.on("command:*", function (obj) {
     const availableCommands = program.commands.map((cmd) => cmd.name());
-    log.error("未知的命令：" + obj[0]);
+    log.error(`${i18n.t("unknownCommand")}: ` + obj[0]);
     if (availableCommands?.length > 0) {
-      log.info("可用命令：" + availableCommands.join(","));
+      log.info(
+        `${i18n.t("availableCommands")}: ` + availableCommands.join(",")
+      );
     }
   });
 
@@ -81,7 +88,42 @@ async function prepare() {
   await checkRoot();
   await checkUserHome();
   await checkEnv();
+  await checkLanguage();
   await checkGlobalUpdate();
+}
+
+// 选择语言
+async function checkLanguage() {
+  const env = dotenv.config({ path: dotenvPath });
+  if (env.parsed?.AGELESSCODING_CLI_LANG) {
+    // 将语言写入环境变量
+    process.env.AGELESSCODING_CLI_LANG = env.parsed.AGELESSCODING_CLI_LANG;
+    return;
+  }
+
+  const inquirer = (await import("inquirer")).default;
+  const result = await inquirer.prompt([
+    {
+      type: "list",
+      name: "language",
+      message: "What language do you use?",
+      default: "en",
+      choices: [
+        {
+          name: "English",
+          value: "en",
+        },
+        {
+          name: "简体中文",
+          value: "zh_CN",
+        },
+      ],
+    },
+  ]);
+  // 将语言写入环境变量
+  process.env.AGELESSCODING_CLI_LANG = result.language;
+  // 将语言写入配置文件
+  fse.appendFileSync(dotenvPath, `AGELESSCODING_CLI_LANG=${result.language}`);
 }
 
 // 检查是否需要更新
@@ -94,27 +136,32 @@ async function checkGlobalUpdate() {
   const lastVersion = await getNpmSemverVersion(currentVersion, npmName);
   if (lastVersion && semver.gt(lastVersion, currentVersion)) {
     log.warn(
-      "有新版本",
+      i18n.t("New version"),
       colors.yellow(
-        `请手动更新 ${npmName}，当前版本：${currentVersion}，最新版本：${lastVersion}`
+        `${i18n.t("pleaseUpdateManually")} ${npmName}, ${i18n.t(
+          "currentVersion"
+        )}: ${currentVersion}, ${i18n.t("latestVersion")}: ${lastVersion}`
       )
     );
-    log.warn("有新版本", colors.yellow(`更新命令：npm install -g ${npmName}`));
+    log.warn(
+      i18n.t("New version"),
+      colors.yellow(`${i18n.t("updateCommand")}: npm install -g ${npmName}`)
+    );
   }
 }
 
 // 检查环境变量
 async function checkEnv() {
-  const dotenv = require("dotenv");
-  const dotenvPath = path.resolve(userHome(), ".agelesscoding");
   const pathExists = await import("path-exists");
   if (pathExists.pathExistsSync(dotenvPath)) {
     dotenv.config({ path: dotenvPath });
+  } else {
+    fse.writeFileSync(dotenvPath, ""); // 创建默认的配置文件
   }
-  createDefaultConfig();
+  createDefaultConfig(); // 将默认的配置写入环境变量
 }
 
-// 创建默认的配置文件
+// 将默认的配置写入环境变量
 function createDefaultConfig() {
   const cliConfig = {
     home: userHome(), // 用户主目录，如：/Users/agelesscoding（暂时用不到）
@@ -131,7 +178,7 @@ function createDefaultConfig() {
 async function checkUserHome() {
   const pathExists = await import("path-exists");
   if (!userHome() || !pathExists.pathExistsSync(userHome())) {
-    throw new Error(colors.red("当前登录用户主目录不存在！"));
+    throw new Error(colors.red(`${i18n.t("homeDirNotExist")}!`));
   }
 }
 

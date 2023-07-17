@@ -10,6 +10,7 @@ const { globSync } = require("glob");
 const { homedir: userHome } = require("os");
 
 const log = require("@agelesscoding/log");
+const i18n = require("@agelesscoding/i18n");
 const Command = require("@agelesscoding/command");
 const Package = require("@agelesscoding/package");
 const { spinnerStart, sleep, execAsync } = require("@agelesscoding/utils");
@@ -63,10 +64,12 @@ const InitCommand = class extends Command {
         // 自定义安装
         await this.installCustomTemplate();
       } else {
-        throw new Error(colors.red("无法识别项目模板类型！"));
+        throw new Error(
+          colors.red(`${i18n.t("unrecognizedProjectTemplateType")}!`)
+        );
       }
     } else {
-      throw new Error(colors.red("项目模板信息不存在！"));
+      throw new Error(colors.red(`${i18n.t("projectTemplateInfoNotExist")}!`));
     }
   }
 
@@ -76,7 +79,9 @@ const InitCommand = class extends Command {
       const cmdArray = command.split(" ");
 
       const cmd = this.checkCommand(cmdArray[0]);
-      if (!cmd) throw new Error(colors.red(`该命令不存在：${command}`));
+      if (!cmd) {
+        throw new Error(colors.red(`${i18n.t("commandNotExist")}: ${command}`));
+      }
 
       const args = cmdArray.slice(1);
       result = await execAsync(cmd, args, {
@@ -125,7 +130,7 @@ const InitCommand = class extends Command {
     log.verbose("templateNpm", this.templateNpm);
 
     // 1. 拷贝模板代码至当前目录
-    const spinner = spinnerStart("正在安装模板...");
+    const spinner = spinnerStart(`${i18n.t("installingTemplate")}...`);
     await sleep(); // 中断 1s，让用户看到安装的效果
 
     try {
@@ -150,7 +155,7 @@ const InitCommand = class extends Command {
       throw error;
     } finally {
       spinner.stop(true);
-      log.success("安装模板成功");
+      log.success(i18n.t("installTemplateSuccess"));
     }
 
     const templateIgnore = this.templateInfo.ignore || [];
@@ -159,14 +164,15 @@ const InitCommand = class extends Command {
 
     // 2. 依赖安装
     if (!this.templateInfo.installCommand) {
-      log.success(
-        colors.bold(colors.green("准备就绪，请自行安装依赖并启动项目 ;-)"))
-      );
+      log.success(colors.bold(colors.green(`${i18n.t("projectReady")} ;-)`)));
       return;
       this.templateInfo.installCommand = "npm install"; // 默认使用 npm 安装依赖
     } else {
       const { installCommand } = this.templateInfo;
-      await this.execCommand(installCommand, "依赖安装失败！");
+      await this.execCommand(
+        installCommand,
+        `${i18n.t("dependencyInstallFail")}!`
+      );
     }
 
     // 3. 启动命令执行
@@ -175,7 +181,10 @@ const InitCommand = class extends Command {
       this.templateInfo.startCommand = "npm run serve"; // 默认使用 npm run serve 启动项目
     } else {
       const { startCommand } = this.templateInfo;
-      await this.execCommand(startCommand, "启动命令执行失败！");
+      await this.execCommand(
+        startCommand,
+        `${i18n.t("startCommandExecuteFail")}!`
+      );
     }
   }
 
@@ -191,7 +200,7 @@ const InitCommand = class extends Command {
     if (await this.templateNpm.exists()) {
       const rootFile = this.templateNpm.getRootFilePath();
       if (fs.existsSync(rootFile)) {
-        log.notice("开始执行自定义模板……");
+        log.notice(`${i18n.t("startExecuteCustomTemplate")}...`);
         const templatePath = path.resolve(
           this.templateNpm.cacheFilePath,
           "template"
@@ -203,14 +212,17 @@ const InitCommand = class extends Command {
           targetPath: process.cwd(),
         };
         const code = `require('${rootFile}')(${JSON.stringify(options)})`;
-        log.verbose("执行自定义模板入口文件 - code", code);
+        log.verbose(
+          `${i18n.t("startExecuteCustomTemplateEntry")} - code`,
+          code
+        );
         await execAsync("node", ["-e", code], {
           stdio: "inherit",
           cwd: process.cwd(),
         });
-        log.success("自定义模板执行成功");
+        log.success(i18n.t("customTemplateExecuteSuccess"));
       } else {
-        throw new Error(colors.red("自定义模板入口文件不存在！"));
+        throw new Error(colors.red(`${i18n.t("customTemplateEntryNotExist")}`));
       }
     }
   }
@@ -237,7 +249,7 @@ const InitCommand = class extends Command {
     });
     log.verbose("templateNpm", templateNpm);
     if (!(await templateNpm.exists())) {
-      const spinner = spinnerStart("正在下载模板...");
+      const spinner = spinnerStart(`${i18n.t("downloadingTemplate")}...`);
       await sleep(); // 中断 1s，让用户看到下载的效果
       try {
         await templateNpm.install();
@@ -245,11 +257,12 @@ const InitCommand = class extends Command {
         throw error;
       } finally {
         spinner.stop(true);
-        if (await templateNpm.exists()) log.success("下载模板成功");
+        if (await templateNpm.exists())
+          log.success(i18n.t("downloadTemplateSuccess"));
         this.templateNpm = templateNpm; // 缓存模板模块
       }
     } else {
-      const spinner = spinnerStart("正在更新模板...");
+      const spinner = spinnerStart(`${i18n.t("updatingTemplate")}...`);
       await sleep(); // 中断 1s，让用户看到下载的效果
       try {
         await templateNpm.update();
@@ -257,7 +270,9 @@ const InitCommand = class extends Command {
         throw error;
       } finally {
         spinner.stop(true);
-        if (await templateNpm.exists()) log.success("更新模板成功");
+        if (await templateNpm.exists()) {
+          log.success(i18n.t("updateTemplateSuccess"));
+        }
         this.templateNpm = templateNpm; // 缓存模板模块
       }
     }
@@ -267,7 +282,7 @@ const InitCommand = class extends Command {
     // 0. 判断项目模板是否存在
     const template = await getProjectTemplate();
     if (!template || template.length === 0) {
-      throw new Error(colors.red("项目模板不存在！"));
+      throw new Error(colors.red(`${i18n.t("projectTemplateNotExist")}!`));
     }
     this.template = template;
     // 1. 判断当前目录是否为空
@@ -282,7 +297,7 @@ const InitCommand = class extends Command {
               type: "confirm",
               name: "isContinue",
               default: false,
-              message: "当前文件夹不为空，是否继续创建项目？",
+              message: i18n.t("continueCreateDirConfirm"),
             },
           ])
         ).isContinue;
@@ -296,7 +311,7 @@ const InitCommand = class extends Command {
             type: "confirm",
             name: "confirmDelete",
             default: false,
-            message: "是否确认清空当前目录下的文件？",
+            message: i18n.t("emptyDirConfirm"),
           },
         ]);
         if (confirmDelete) {
@@ -314,15 +329,15 @@ const InitCommand = class extends Command {
     const { type } = await this.inquirer.prompt({
       type: "list",
       name: "type",
-      message: "请选择初始化项目类型",
+      message: i18n.t("selectProjectType"),
       default: TYPE_PROJECT,
       choices: [
         {
-          name: "项目",
+          name: i18n.t("project"),
           value: TYPE_PROJECT,
         },
         {
-          name: "组件",
+          name: i18n.t("component"),
           value: TYPE_COMPONENT,
         },
       ],
@@ -334,7 +349,8 @@ const InitCommand = class extends Command {
       return template.tag.includes(type);
     });
 
-    const title = type === TYPE_PROJECT ? "项目" : "组件";
+    const title =
+      type === TYPE_PROJECT ? i18n.t("project") : i18n.t("component");
 
     let project = {};
     function isValidName(v) {
@@ -345,7 +361,7 @@ const InitCommand = class extends Command {
     const projectNamePrompt = {
       type: "input",
       name: "projectName",
-      message: `请输入${title}名称`,
+      message: i18n.t("enterProjectName", { title: title.toLowerCase() }),
       default: type === TYPE_PROJECT ? "project" : "component",
       validate: function (v) {
         // Declare function as asynchronous, and save the done callback
@@ -362,7 +378,9 @@ const InitCommand = class extends Command {
           // 不合法：1, -a, _a, a-, a_, a-1, a_1, a-b-, a_b_, a-b1-c1-, a_b1_c1_
           if (!isValidName(v)) {
             // Pass the return value in the done callback
-            done(`请输入合法的${title}名称`);
+            done(
+              i18n.t("enterValidProjectName", { title: title.toLowerCase() })
+            );
             return;
           }
           // Pass the return value in the done callback
@@ -376,7 +394,7 @@ const InitCommand = class extends Command {
     const projectVersionPrompt = {
       type: "input",
       name: "projectVersion",
-      message: `请输入${title}版本号`,
+      message: i18n.t("enterProjectVersion", { title: title.toLowerCase() }),
       default: "1.0.0",
       validate: function (v) {
         // Declare function as asynchronous, and save the done callback
@@ -386,7 +404,9 @@ const InitCommand = class extends Command {
         setTimeout(function () {
           if (!!!semver.valid(v)) {
             // Pass the return value in the done callback
-            done(`请输入合法的${title}名称`);
+            done(
+              i18n.t("enterValidProjectVersion", { title: title.toLowerCase() })
+            );
             return;
           }
           // Pass the return value in the done callback
@@ -400,7 +420,7 @@ const InitCommand = class extends Command {
     const projectTemplatePrompt = {
       type: "list",
       name: "projectTemplate",
-      message: `请选择${title}模板`,
+      message: i18n.t("selectProjectTemplate", { title: title.toLowerCase() }),
       choices: this.createTemplateChoices(),
     };
 
@@ -424,7 +444,7 @@ const InitCommand = class extends Command {
       const descriptionPrompt = {
         type: "input",
         name: "componentDescription",
-        message: `请输入${title}描述信息`,
+        message: i18n.t("enterDescription"),
         default: "component description",
         validate: function (v) {
           // Declare function as asynchronous, and save the done callback
@@ -434,7 +454,7 @@ const InitCommand = class extends Command {
           setTimeout(function () {
             if (!v) {
               // Pass the return value in the done callback
-              done(`请输入${title}描述信息`);
+              done(i18n.t("请输入描述信息"));
               return;
             }
             // Pass the return value in the done callback
@@ -480,9 +500,16 @@ const InitCommand = class extends Command {
 
   // 创建项目模板的选择列表
   createTemplateChoices() {
+    function getTemplateName(name) {
+      if (typeof name === "string") return name;
+      if (Object.prototype.toString.call(name) === "[object Object]") {
+        const CLI_LANG = process.env.AGELESSCODING_CLI_LANG;
+        return name[CLI_LANG];
+      }
+    }
     return this.template.map((item) => ({
       value: item.npmName,
-      name: item.name,
+      name: getTemplateName(item.name),
     }));
   }
 };
