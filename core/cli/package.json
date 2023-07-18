@@ -1,7 +1,7 @@
 {
   "name": "@agelesscoding/cli",
   "private": false,
-  "version": "1.0.7-alpha.0",
+  "version": "1.0.8-alpha.0",
   "description": "Ageless Coding - Core",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "",
@@ -27,8 +27,8 @@
   "dependencies": {
     "@agelesscoding/exec": "file:../exec",
     "@agelesscoding/get-npm-info": "file:../../utils/get-npm-info",
-    "@agelesscoding/locales": "file:../../utils/locales",
     "@agelesscoding/init": "file:../../commands/init",
+    "@agelesscoding/locales": "file:../../utils/locales",
     "@agelesscoding/log": "file:../../utils/log",
     "colors": "^1.4.0",
     "commander": "^11.0.0",

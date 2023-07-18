@@ -1,6 +1,6 @@
 {
   "name": "@agelesscoding/locales",
-  "version": "1.0.7-alpha.0",
+  "version": "1.0.8-alpha.0",
   "description": "Ageless Coding Utils - locales",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
@@ -25,6 +25,5 @@
   },
   "bugs": {
     "url": "https://github.com/agelesscoding/cli/issues"
-  },
-  "dependencies": {}
+  }
 }
