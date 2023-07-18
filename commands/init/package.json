@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@agelesscoding/command": "file:../../models/command",
-    "@agelesscoding/i18n": "file:../../utils/i18n",
+    "@agelesscoding/locales": "file:../../utils/locales",
     "@agelesscoding/log": "file:../../utils/log",
     "@agelesscoding/package": "file:../../models/package",
     "@agelesscoding/request": "file:../../utils/request",
