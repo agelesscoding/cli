@@ -34,6 +34,7 @@
     "commander": "^11.0.0",
     "dotenv": "^16.3.1",
     "fs-extra": "^11.1.1",
+    "i18next": "^23.2.11",
     "import-local": "^3.1.0",
     "inquirer": "^9.2.8",
     "npmlog": "^7.0.1",
