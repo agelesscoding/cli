@@ -1,7 +1,5 @@
 "use strict";
 
-module.exports = core;
-
 const path = require("path");
 const fse = require("fs-extra");
 const i18n = require("i18next");
@@ -47,7 +45,6 @@ async function registerI18n() {
 
 // 注册命令
 function registerCommand() {
-  console.log("registerCommand", i18n);
   program
     .version(pkg.version, "-V, --version", i18n.t("version"))
     .name(Object.keys(pkg.bin)[0])
@@ -87,11 +84,6 @@ function registerCommand() {
     }
   });
 
-  // 打印帮助信息
-  // if (process.argv?.length < 3) {
-  //   program.outputHelp();
-  // }
-
   program.parse(process.argv);
 
   if (!program?.args?.length) program.outputHelp();
@@ -101,6 +93,7 @@ async function prepare() {
   checkPkgVersion();
   await checkRoot();
   await checkUserHome();
+  await checkConfigDir();
   await checkEnv();
   await checkLanguage();
   await checkGlobalUpdate();
@@ -188,6 +181,13 @@ function createDefaultConfig() {
   process.env.CLI_HOME_PATH = cliConfig.cliHome;
 }
 
+// 检查脚手架配置目录
+async function checkConfigDir() {
+  const pathExists = await import("path-exists");
+  const configDir = path.join(userHome(), constant.DEFAULT_CLI_HOME);
+  if (!pathExists.pathExistsSync(configDir)) fse.mkdirpSync(configDir);
+}
+
 // 检查用户主目录
 async function checkUserHome() {
   const pathExists = await import("path-exists");
@@ -210,3 +210,5 @@ async function checkRoot() {
 function checkPkgVersion() {
   log.notice("cli", pkg.version);
 }
+
+module.exports = core;
