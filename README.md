@@ -1,6 +1,6 @@
 # `@agelesscoding/cli`
 
-![Screen Shot](./core/cli/screenshot.gif)
+![Screen Shot](https://cdn.jsdelivr.net/gh/agelesscoding/cli@main/core/cli/screenshot.gif)
 
 ## Quick Start
 
