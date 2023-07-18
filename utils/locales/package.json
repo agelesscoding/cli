@@ -1,7 +1,7 @@
 {
-  "name": "@agelesscoding/i18n",
+  "name": "@agelesscoding/locales",
   "version": "1.0.7-alpha.0",
-  "description": "Ageless Coding Utils - i18n",
+  "description": "Ageless Coding Utils - locales",
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
   "license": "ISC",
@@ -26,7 +26,5 @@
   "bugs": {
     "url": "https://github.com/agelesscoding/cli/issues"
   },
-  "dependencies": {
-    "i18next": "^23.2.11"
-  }
+  "dependencies": {}
 }

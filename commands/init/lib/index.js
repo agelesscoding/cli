@@ -3,6 +3,7 @@
 const fs = require("fs");
 const ejs = require("ejs");
 const path = require("path");
+const i18n = require("i18next");
 const fse = require("fs-extra");
 const colors = require("colors");
 const semver = require("semver");
@@ -10,8 +11,8 @@ const { globSync } = require("glob");
 const { homedir: userHome } = require("os");
 
 const log = require("@agelesscoding/log");
-const i18n = require("@agelesscoding/i18n");
 const Command = require("@agelesscoding/command");
+const locales = require("@agelesscoding/locales");
 const Package = require("@agelesscoding/package");
 const { spinnerStart, sleep, execAsync } = require("@agelesscoding/utils");
 
@@ -279,6 +280,8 @@ const InitCommand = class extends Command {
   }
 
   async prepare() {
+    await this.registerI18n();
+
     // 0. 判断项目模板是否存在
     const template = await getProjectTemplate();
     if (!template || template.length === 0) {
@@ -321,6 +324,17 @@ const InitCommand = class extends Command {
       }
     }
     return this.getProjectInfo();
+  }
+
+  // 注册 i18n
+  async registerI18n() {
+    await i18n.init({
+      lng: process.env.AGELESSCODING_CLI_LANG,
+      resources: {
+        en: { translation: locales.en },
+        zh_CN: { translation: locales.zhCN },
+      },
+    });
   }
 
   async getProjectInfo() {

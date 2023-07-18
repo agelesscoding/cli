@@ -4,6 +4,7 @@ module.exports = core;
 
 const path = require("path");
 const fse = require("fs-extra");
+const i18n = require("i18next");
 const colors = require("colors");
 const dotenv = require("dotenv");
 const semver = require("semver");
@@ -12,7 +13,7 @@ const { homedir: userHome } = require("os");
 
 const log = require("@agelesscoding/log");
 const exec = require("@agelesscoding/exec");
-const i18n = require("@agelesscoding/i18n");
+const locales = require("@agelesscoding/locales");
 
 const constant = require("./const");
 const pkg = require("../package.json");
@@ -25,6 +26,7 @@ const program = new commander.Command();
 async function core() {
   try {
     await prepare();
+    await registerI18n();
     registerCommand();
   } catch (error) {
     log.error(error.message);
@@ -32,8 +34,20 @@ async function core() {
   }
 }
 
+// 注册 i18n
+async function registerI18n() {
+  await i18n.init({
+    lng: process.env.AGELESSCODING_CLI_LANG,
+    resources: {
+      en: { translation: locales.en },
+      zh_CN: { translation: locales.zhCN },
+    },
+  });
+}
+
 // 注册命令
 function registerCommand() {
+  console.log("registerCommand", i18n);
   program
     .version(pkg.version, "-V, --version", i18n.t("version"))
     .name(Object.keys(pkg.bin)[0])

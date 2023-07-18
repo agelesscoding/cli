@@ -27,7 +27,7 @@
   "dependencies": {
     "@agelesscoding/exec": "file:../exec",
     "@agelesscoding/get-npm-info": "file:../../utils/get-npm-info",
-    "@agelesscoding/i18n": "file:../../utils/i18n",
+    "@agelesscoding/locales": "file:../../utils/locales",
     "@agelesscoding/init": "file:../../commands/init",
     "@agelesscoding/log": "file:../../utils/log",
     "colors": "^1.4.0",
