@@ -41,5 +41,6 @@
   "latestVersion": "Latest version",
   "updateCommand": "Update command",
   "unknownCommand": "Unknown command",
-  "availableCommands": "Available commands"
+  "availableCommands": "Available commands",
+  "localTemplatesConfigPath": "Templates configuration file's local absolute path"
 }

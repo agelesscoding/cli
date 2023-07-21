@@ -51,6 +51,11 @@ function registerCommand() {
     .alias(Object.keys(pkg.bin)[1])
     .usage("<command> [options]")
     .option("-d, --debug", i18n.t("debug"), false)
+    .option(
+      "-ltcp, --localTemplatesConfigPath <localTemplatesConfigPath>",
+      i18n.t("localTemplatesConfigPath"),
+      ""
+    )
     .option("-tp, --targetPath <targetPath>", i18n.t("targetPath"), "")
     .helpOption("-h, --help", i18n.t("help"))
     .addHelpCommand("help [command]", i18n.t("showHelp"));
@@ -71,6 +76,13 @@ function registerCommand() {
   // 设置 targetPath 环境变量
   program.on("option:targetPath", function () {
     process.env.CLI_TARGET_PATH = program.getOptionValue("targetPath");
+  });
+
+  // 设置 localTemplatesConfigPath 环境变量
+  program.on("option:localTemplatesConfigPath", function () {
+    process.env.CLI_LOCAL_TEMPLATES_CONFIG_PATH = program.getOptionValue(
+      "localTemplatesConfigPath"
+    );
   });
 
   //  监听未知命令
