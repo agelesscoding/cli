@@ -42,5 +42,6 @@
   "updateCommand": "Update command",
   "unknownCommand": "Unknown command",
   "availableCommands": "Available commands",
-  "localTemplatesConfigPath": "Templates configuration file's local absolute path"
+  "localTemplatesConfigPath": "Templates configuration file's local absolute path",
+  "remoteTemplatesConfigPath": "Templates configuration file's remote path"
 }

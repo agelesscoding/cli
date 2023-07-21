@@ -42,5 +42,6 @@
   "updateCommand": "更新命令",
   "unknownCommand": "未知的命令",
   "availableCommands": "可用命令",
-  "localTemplatesConfigPath": "模板配置文件的本地绝对路径"
+  "localTemplatesConfigPath": "模板配置文件的本地绝对路径",
+  "remoteTemplatesConfigPath": "模板配置文件的远程路径"
 }

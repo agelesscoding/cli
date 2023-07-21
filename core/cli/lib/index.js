@@ -56,6 +56,11 @@ function registerCommand() {
       i18n.t("localTemplatesConfigPath"),
       ""
     )
+    .option(
+      "-rtcp, --remoteTemplatesConfigPath <remoteTemplatesConfigPath>",
+      i18n.t("remoteTemplatesConfigPath"),
+      ""
+    )
     .option("-tp, --targetPath <targetPath>", i18n.t("targetPath"), "")
     .helpOption("-h, --help", i18n.t("help"))
     .addHelpCommand("help [command]", i18n.t("showHelp"));
@@ -82,6 +87,13 @@ function registerCommand() {
   program.on("option:localTemplatesConfigPath", function () {
     process.env.CLI_LOCAL_TEMPLATES_CONFIG_PATH = program.getOptionValue(
       "localTemplatesConfigPath"
+    );
+  });
+
+  // 设置 remoteTemplatesConfigPath 环境变量
+  program.on("option:remoteTemplatesConfigPath", function () {
+    process.env.CLI_REMOTE_TEMPLATES_CONFIG_PATH = program.getOptionValue(
+      "remoteTemplatesConfigPath"
     );
   });
 

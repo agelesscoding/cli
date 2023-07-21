@@ -4,7 +4,9 @@ const axios = require("axios");
 
 // TODO 后期支持从 jsdelivr 获取（https://cdn.jsdelivr.net）
 const BASE_URL =
-  process.env.AGELESSCODING_CLI_BASE_URL || "https://api.github.com/repos";
+  process.env.CLI_REMOTE_TEMPLATES_CONFIG_PATH ||
+  process.env.AGELESSCODING_CLI_BASE_URL ||
+  "https://api.github.com/repos";
 
 const request = axios.create({
   baseURL: BASE_URL,
@@ -20,3 +22,4 @@ request.interceptors.response.use(
 );
 
 module.exports = request;
+module.exports.axios = axios;
