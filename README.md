@@ -2,6 +2,8 @@
 
 ![Screen Shot](https://cdn.jsdelivr.net/gh/agelesscoding/cli@main/core/cli/screenshot.gif)
 
+**Tip**: In the scaffolding's interactive interface, you can choose the built-in project template, or choose to develop a template yourself. Then, wait for the scaffolding to install the template to your project directory, and you can start development.
+
 ## Quick Start
 
 First, you need to install the scaffolding globally:
@@ -17,7 +19,25 @@ $ mkdir demo && cd demo
 $ agc init # or agc init [projectName]
 ```
 
-**Tip**: In the scaffolding's interactive interface, you can choose the built-in project template, or choose to develop a template yourself. Then, wait for the scaffolding to install the template to your project directory, and you can start development.
+## Create your project by local template configuration file
+
+Assuming that your template configuration file is located locally at `/Users/<username>/template/configuration/file/templates.json`, you can create a new template project using the following command:
+
+```bash
+$ agc init -ltcp /Users/<username>/template/configuration/file/templates.json
+```
+
+![Screen Shot](https://cdn.jsdelivr.net/gh/agelesscoding/cli@main/core/cli/screenshot.gif)
+
+## Create your project by remote template configuration file
+
+Assuming that your template configuration file address is: `https://cdn.jsdelivr.net/gh/agelesscoding/cli-template@main/templates.json`, you can create a new template project using the following command:
+
+```bash
+$ agc init -rtcp https://cdn.jsdelivr.net/gh/agelesscoding/cli-template@main/templates.json
+```
+
+![Screen Shot](https://cdn.jsdelivr.net/gh/agelesscoding/cli@main/core/cli/screenshot.gif)
 
 Happy coding ;-)
 
