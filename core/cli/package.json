@@ -2,9 +2,16 @@
   "name": "@agelesscoding/cli",
   "private": false,
   "version": "1.0.11-alpha.0",
-  "description": "Ageless Coding - Core",
+  "description": "Ageless Coding Core - cli",
+  "keywords": [
+    "scaffolding",
+    "Strong Business-oriented Scaffolding",
+    "@agelesscoding/cli",
+    "agelesscoding",
+    "agc"
+  ],
   "author": "smpower <rf.wangchn@foxmail.com>",
-  "homepage": "",
+  "homepage": "https://github.com/agelesscoding/cli#readme",
   "license": "ISC",
   "main": "lib/index.js",
   "bin": {

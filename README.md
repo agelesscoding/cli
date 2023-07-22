@@ -27,7 +27,7 @@ Assuming that your template configuration file is located locally at `/Users/<us
 $ agc init -ltcp /Users/<username>/template/configuration/file/templates.json
 ```
 
-![Screen Shot](https://cdn.jsdelivr.net/gh/agelesscoding/cli@main/core/cli/screenshot.gif)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/WXIXwLpGRG8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## Create your project by remote template configuration file
 
@@ -36,8 +36,6 @@ Assuming that your template configuration file address is: `https://cdn.jsdelivr
 ```bash
 $ agc init -rtcp https://cdn.jsdelivr.net/gh/agelesscoding/cli-template@main/templates.json
 ```
-
-![Screen Shot](https://cdn.jsdelivr.net/gh/agelesscoding/cli@main/core/cli/screenshot.gif)
 
 Happy coding ;-)
 
