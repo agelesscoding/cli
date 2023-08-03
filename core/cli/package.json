@@ -12,7 +12,7 @@
   ],
   "author": "smpower <rf.wangchn@foxmail.com>",
   "homepage": "https://github.com/agelesscoding/cli#readme",
-  "license": "ISC",
+  "license": "MIT",
   "main": "lib/index.js",
   "bin": {
     "agelesscoding": "bin/index.js",

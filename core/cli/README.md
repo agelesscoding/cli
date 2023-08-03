@@ -1,5 +1,9 @@
 # `@agelesscoding/cli`
 
+![NPM Version](https://img.shields.io/npm/v/@agelesscoding/cli.svg)
+![NPM License](https://img.shields.io/npm/l/%40agelesscoding%2Fcli)
+![npm Downloads](https://img.shields.io/npm/dm/%40agelesscoding%2Fcli)
+
 ![Screen Shot](https://cdn.jsdelivr.net/gh/agelesscoding/cli@main/screenshots/quickstart.gif)
 
 **Tip**: In the scaffolding's interactive interface, you can choose the built-in project template, or choose to develop a template yourself. Then, wait for the scaffolding to install the template to your project directory, and you can start development.
