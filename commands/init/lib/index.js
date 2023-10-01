@@ -20,8 +20,10 @@ const getProjectTemplate = require("./getProjectTemplate");
 
 const TYPE_PROJECT = "project";
 const TYPE_COMPONENT = "component";
+const TYPE_WECHAT = "wechat";
 const TEMPLATE_TYPE_NORMAL = "normal"; // 标准模板
 const TEMPLATE_TYPE_CUSTOM = "custom"; // 自定义模板
+const TEMPLATE_TYPE_WECHAT = "wechat"; // 微信公众号配套源码示例
 const WHITE_COMMAND = ["npm", "cnpm"]; // 白名单命令
 
 const InitCommand = class extends Command {
@@ -64,6 +66,9 @@ const InitCommand = class extends Command {
       } else if (this.templateInfo.type === TEMPLATE_TYPE_CUSTOM) {
         // 自定义安装
         await this.installCustomTemplate();
+      } else if (this.templateInfo.type === TEMPLATE_TYPE_WECHAT) {
+        // 微信公众号配套源码示例安装
+        await this.installNormalTemplate();
       } else {
         throw new Error(
           colors.red(`${i18n.t("unrecognizedProjectTemplateType")}!`)
@@ -354,6 +359,10 @@ const InitCommand = class extends Command {
           name: i18n.t("component"),
           value: TYPE_COMPONENT,
         },
+        {
+          name: i18n.t("wechat"),
+          value: TYPE_WECHAT,
+        },
       ],
     });
 
@@ -363,8 +372,7 @@ const InitCommand = class extends Command {
       return template.tag.includes(type);
     });
 
-    const title =
-      type === TYPE_PROJECT ? i18n.t("project") : i18n.t("component");
+    const title = i18n.t(type);
 
     let project = {};
     function isValidName(v) {
@@ -376,7 +384,7 @@ const InitCommand = class extends Command {
       type: "input",
       name: "projectName",
       message: i18n.t("enterProjectName", { title: title.toLowerCase() }),
-      default: type === TYPE_PROJECT ? "project" : "component",
+      default: type,
       validate: function (v) {
         // Declare function as asynchronous, and save the done callback
         const done = this.async();
@@ -438,7 +446,7 @@ const InitCommand = class extends Command {
       choices: this.createTemplateChoices(),
     };
 
-    if (type === TYPE_PROJECT) {
+    if (type === TYPE_PROJECT || type === TYPE_WECHAT) {
       // 2. 获取项目的基本信息
       if (isValidName(this.projectName)) {
         project = await this.inquirer.prompt([

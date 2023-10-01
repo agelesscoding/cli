@@ -12,6 +12,7 @@
   "selectProjectType": "请选择要初始化的项目类型",
   "project": "项目",
   "component": "组件",
+  "wechat": "公众号文章配套源码",
   "enterProjectName": "请输入{{title}}名称",
   "enterValidProjectName": "请输入合法的{{title}}名称",
   "enterProjectVersion": "请输入{{title}}版本号",

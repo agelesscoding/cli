@@ -12,6 +12,7 @@
   "selectProjectType": "Please select the type of project",
   "project": "Project",
   "component": "Component",
+  "wechat": "Wechat Source Code Example",
   "enterProjectName": "Please enter the {{title}} name",
   "enterValidProjectName": "Please enter a valid {{title}} name",
   "enterProjectVersion": "Please enter the {{title}} version number",
